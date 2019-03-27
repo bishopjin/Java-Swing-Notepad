@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.Scanner;
-import java.nio.file.*;
 
 public class notepadSample extends JFrame implements ActionListener {
 	private JButton open_btn;
@@ -28,7 +26,7 @@ public class notepadSample extends JFrame implements ActionListener {
 	public notepadSample(){
 		setSize(600, 400);
 		setTitle("NatPad");
-		setResizable(false);
+		//setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 
@@ -117,10 +115,9 @@ public class notepadSample extends JFrame implements ActionListener {
 		chooser = new JFileChooser();
 		int returnVal = chooser.showOpenDialog(this);
 		if(returnVal == JFileChooser.APPROVE_OPTION){  
-			file = chooser.getSelectedFile();    
+			file = chooser.getSelectedFile(); 
+			String path = file.getAbsolutePath();   
 		}
-
-		String path = file.getAbsolutePath();
 		/*
 		FileInputStream fin=new FileInputStream(path);  
 		BufferedReader din=new BufferedReader(new InputStreamReader(fin));  
