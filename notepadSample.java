@@ -20,7 +20,7 @@ public class notepadSample extends JFrame implements ActionListener {
 	private JTextField font_size;
 	private JLabel font_size_label;
 	private JFileChooser chooser;
-	private JFileChooser SaveAs;
+	private JFileChooser saveAs;
 	File file;
 
 	public notepadSample(){
@@ -79,10 +79,19 @@ public class notepadSample extends JFrame implements ActionListener {
 		String s = event.getActionCommand();
 
 		if (s == "Quit"){
-			int dialogButton = JOptionPane.YES_NO_OPTION;
-			int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Close Application", dialogButton);
-			if(dialogResult == 0) {
-  				System.exit(0);
+			if (textarea.getText().trim().length() > 0){
+				int dialogButton = JOptionPane.YES_NO_OPTION;
+				int dialogResult = JOptionPane.showConfirmDialog(this, "Save the current session before closing the application.", "Save", dialogButton);
+				if(dialogResult == 0) {
+	  				savetofile();
+				}
+			}
+			else{
+				int dialogButton = JOptionPane.YES_NO_OPTION;
+				int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure?", "Close Application", dialogButton);
+				if(dialogResult == 0) {
+	  				System.exit(0);
+				}
 			} 
 		}
 		else if (s == "Save"){
@@ -90,11 +99,20 @@ public class notepadSample extends JFrame implements ActionListener {
 		}
 		else if (s == "New"){
 			if (textarea.getText().trim().length() > 0){
-				savetofile();
+				if(prompt() == 0) {
+	  				savetofile();
+				}
 			}
 		}
 		else if (s == "Open"){
-			openfile();
+			if (textarea.getText().trim().length() > 0){		
+				if(prompt() == 0) {
+	  				savetofile();
+				}
+			}
+			else{
+				openfile();
+			}
 		}
 		else if (s == "Foreground"){
 			Color c = JColorChooser.showDialog(null, "Choose a Color", textarea.getForeground());
@@ -110,14 +128,18 @@ public class notepadSample extends JFrame implements ActionListener {
 			textarea.setFont(textarea.getFont().deriveFont(size));
 		}
 	}
-
+	public int prompt(){
+		int dialogButton = JOptionPane.YES_NO_OPTION;
+		int dialogResult = JOptionPane.showConfirmDialog(this, "Save the current session before opening file.", "Save", dialogButton);
+		return dialogResult;		
+	}
 	public void openfile(){
 		chooser = new JFileChooser();
 		int returnVal = chooser.showOpenDialog(null);
-		file = chooser.getSelectedFile(); 
-		String path = file.getAbsolutePath();
-
+	
 		try{
+			file = chooser.getSelectedFile(); 
+			String path = file.getAbsolutePath();
 			FileReader reader = new FileReader(path);
 			BufferedReader br = new BufferedReader(reader);
 			textarea.read(br, null);
@@ -125,23 +147,23 @@ public class notepadSample extends JFrame implements ActionListener {
 			textarea.requestFocus();
 		}
 		catch(Exception e){
-			JOptionPane.showMessageDialog(null, e);
+			//JOptionPane.showMessageDialog(null, e);
 		}
 	}
 
 	public void savetofile(){
-		SaveAs = new JFileChooser();
-      	SaveAs.setApproveButtonText("Save");
-      	int actionDialog = SaveAs.showSaveDialog(this);
+		saveAs = new JFileChooser();
+      	saveAs.setApproveButtonText("Save");
+      	int actionDialog = saveAs.showSaveDialog(this);
       	if (actionDialog != JFileChooser.APPROVE_OPTION) {
         	return;
       	}
 
-      	File fileName = new File(SaveAs.getSelectedFile() + ".txt");
       	BufferedWriter outFile = null;
       	try {
-         	outFile = new BufferedWriter(new FileWriter(fileName));
-
+      		file = saveAs.getSelectedFile(); 
+			String filename = file.getAbsolutePath();
+         	outFile = new BufferedWriter(new FileWriter(filename));
          	textarea.write(outFile);   // *** here: ***
 
       	} 
