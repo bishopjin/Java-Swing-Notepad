@@ -113,23 +113,20 @@ public class notepadSample extends JFrame implements ActionListener {
 
 	public void openfile(){
 		chooser = new JFileChooser();
-		int returnVal = chooser.showOpenDialog(this);
-		if(returnVal == JFileChooser.APPROVE_OPTION){  
-			file = chooser.getSelectedFile(); 
-			String path = file.getAbsolutePath();   
+		int returnVal = chooser.showOpenDialog(null);
+		file = chooser.getSelectedFile(); 
+		String path = file.getAbsolutePath();
+
+		try{
+			FileReader reader = new FileReader(path);
+			BufferedReader br = new BufferedReader(reader);
+			textarea.read(br, null);
+			br.close();
+			textarea.requestFocus();
 		}
-		/*
-		FileInputStream fin=new FileInputStream(path);  
-		BufferedReader din=new BufferedReader(new InputStreamReader(fin));  
-		String str=" ";  
-		while(str!=null){  
-			str=din.readLine();  
-			if(str==null)  
-				break;  
-			textarea.append(str+"\n");  
-		}  
-		*/
-		textarea.setText("I'm bugged you know, please fix me Senpai!");
+		catch(Exception e){
+			JOptionPane.showMessageDialog(null, e);
+		}
 	}
 
 	public void savetofile(){
@@ -147,9 +144,11 @@ public class notepadSample extends JFrame implements ActionListener {
 
          	textarea.write(outFile);   // *** here: ***
 
-      	} catch (Exception ex) {
+      	} 
+      	catch (Exception ex) {
          	ex.printStackTrace();
-      	} finally {
+      	} 
+      	finally {
          	if (outFile != null) {
             	try {
                		outFile.close();

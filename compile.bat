@@ -1,0 +1,3 @@
+javac notepadSample.java
+
+pause
